@@ -5,11 +5,6 @@ var Vector2 = function()
 	this.y = 0;
 }
 
-
-//ADD A NORMALIZE FUNCTION
-
-
-
 //ADDITION Function
 Vector2.prototype.add = function( other_vector )
 {
