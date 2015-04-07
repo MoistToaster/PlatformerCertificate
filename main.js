@@ -48,6 +48,8 @@ var fpsTime = 0;
 //ADDED THESE LINES
 var keyboard = new Keyboard();
 var player = new Player();
+var enemy = new Enemy();
+//var vector2 = new Vector2object();
 
 function run()
 {
@@ -63,7 +65,9 @@ function run()
 	//added these lines
 	player.update(deltaTime);
 	player.draw();
-		
+	
+	enemy.update(deltaTime);
+	enemy.draw();
 	// update the frame counter 
 	fpsTime += deltaTime;
 	fpsCount++;
