@@ -2,6 +2,7 @@ var Keyboard = function()
 {
 		var self = this;
 		
+		//these set it up so that...
 		window.addEventListener('keydown', function(evt) {self.onKeyDown(evt);}, false);
 		window.addEventListener('keyup', function(evt) {self.onKeyUp(evt);}, false);
 		
@@ -19,3 +20,19 @@ var Keyboard = function()
 		this.KEY_W = 87;
 		this.KEY_SHIFT = 16;
 };
+
+
+Keyboard.prototype.onKeyDown = function(evt)
+{
+	this.keys[evt.keyCode] = true;
+}
+
+Keyboard.prototype.onKeyUp = function(evt)
+{
+	this.keys[evt.keyCode] = false;
+}
+
+Keyboard.prototype.isKeyDown = function(keyCode)
+{
+	return this.keys[keyCode];
+}
