@@ -54,7 +54,7 @@ var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
 
-var LAYER_COUNT = 4;
+var LAYER_COUNT = 5;
 var MAP = {tw:40, th:30}; //set this to size of map
 var TILE = 35;
 var TILESET_TILE = 70;
@@ -65,10 +65,9 @@ var TILESET_COUNT_Y = 14;
 
 var LAYER_BACKGROUND = 0;
 var LAYER_OBJECTS = 1;
-//Fix death layer json
-//var LAYER_DEATH = 2;
-var LAYER_PLATFORMS = 2;
-var LAYER_LADDERS = 3;
+var LAYER_DEATH = 2;
+var LAYER_PLATFORMS = 3;
+var LAYER_LADDERS = 4;
 
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
