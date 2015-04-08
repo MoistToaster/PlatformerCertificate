@@ -54,7 +54,7 @@ var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
 
-var LAYER_COUNT =3;
+var LAYER_COUNT = 4;
 var MAP = {tw:40, th:30}; //set this to size of map
 var TILE = 35;
 var TILESET_TILE = 70;
@@ -71,38 +71,60 @@ tileset.src = "tileset.png";
 //DRAWS THE MAP
 function drawMap()
 {
- for(var layerIdx=0; layerIdx<LAYER_COUNT; layerIdx++)
- {
- var idx = 0;
- for( var y = 0; y < level1.layers[layerIdx].height; y++ )
- {
- for( var x = 0; x < level1.layers[layerIdx].width; x++ )
- {
- if( level1.layers[layerIdx].data[idx] != 0 )
- {
- // the tiles in the Tiled map are base 1 (meaning a value of 0 means no tile), so subtract one from the tileset id to get the
- // correct tile
- var tileIndex = level1.layers[layerIdx].data[idx] - 1;
- var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) * (TILESET_TILE + TILESET_SPACING);
- var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
- context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x*TILE, (y-1)*TILE, TILESET_TILE, TILESET_TILE);
- }
- idx++;
- }
- }
- }
-}
+	//this loops over all the layers in our tilemap
+	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++ )
+	{
+		//render everything in the current layer (layerIdx)
+		//look at every tile in the layer in turn and render them
+		
+		var idx = 0;
+		//look at each row
+		for ( var y = 0 ; y < level1.layers[layerIdx].height ; ++y )
+		{
+			//look at each tile in the row
+			for ( var x = 0 ; x < level1.layers[layerIdx].width ; ++x )
+			{
+				var tileIndex = level1.layers[layerIdx].data[idx] - 1;
+				
+				//if there's actually a tile here
+				if ( tileIndex != -1 )
+				{
+					//draw the current tile at the current location
+					
+					//where in the tilemap is the current tile?
+					//where in the world should the current tile go?
+					
+					//source x in the tileset
+					var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) * 
+										(TILESET_TILE + TILESET_SPACING);
+							
+					//source y in the tileset		
+					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * 
+												(TILESET_TILE + TILESET_SPACING);
+					
+					//destination x on the canvas
+					var dx = x * TILE;
+					//destination y on the canvas
+					var dy = (y-17) * TILE;
+					
+					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE,
+												dx, dy, TILESET_TILE, TILESET_TILE);
+				}
+				++idx;
+			}
+		}
+	}
+}	
+	
+
 
 //RUNS THE GAME
 function run()
 {
-	context.fillStyle = "#ccc";		
+	context.fillStyle = "#7c7979";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	var deltaTime = getDeltaTime();
-	
-	//COMMENTED OUT THIS
-	//context.drawImage(chuckNorris, SCREEN_WIDTH/2 - chuckNorris.width/2, SCREEN_HEIGHT/2 - chuckNorris.height/2);
 	
 	
 	//added these lines
@@ -111,6 +133,7 @@ function run()
 	
 	enemy.update(deltaTime);
 	enemy.draw();
+	drawMap();
 	// update the frame counter 
 	fpsTime += deltaTime;
 	fpsCount++;
