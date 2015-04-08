@@ -66,6 +66,42 @@ var TILESET_COUNT_Y = 14;
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
 
+//Collision array
+var cells = [];
+
+function initializeCollision()
+{
+	//loop through each layer
+	for ( var layerIdx = 0; layerIdx < LAYER_COUNT ; ++layerIdx )
+	{
+		cells[layerIdx] = [];
+		var idx = 0;
+	
+		//loop through each row
+		for ( var y = 0; y < level1.layers[layerIdx].height ; ++y )
+		{
+			cells[layerIdx][y] = [];
+		
+			//loop through each cell
+			for ( var x = 0; x < level1.layers[layerIdx].width ; ++x )
+			{
+				if ( level1.layers[layerIdx].data[idx] != 0 )
+				{
+					cells[layerIdx][y][x] = 1;
+					cells[layerIdx][y][x+1] = 1;
+					cells[layerIdx][y-1][x+1] = 1;
+					cells[layerIdx][y-1][x] = 1;	
+				}
+				else if ( cells[layerIdx][y][x] != 1 )
+				{
+					cells[layerIdx][y][x] = 0;
+				}
+				
+				++idx;
+			}
+		}
+	}
+}
 
 
 //DRAWS THE MAP
@@ -145,10 +181,12 @@ function run()
 	}		
 		
 	// draw the FPS
-	context.fillStyle = "#f00";
+	context.fillStyle = "#000";
 	context.font="14px Arial";
 	context.fillText("FPS: " + fps, 5, 20, 100);
 }
+
+initializeCollision();
 
 
 //-------------------- Don't modify anything below here

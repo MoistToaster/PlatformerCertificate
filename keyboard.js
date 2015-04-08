@@ -1,3 +1,4 @@
+//Variables for keyboard presses
 var Keyboard = function() 
 {
 		var self = this;
