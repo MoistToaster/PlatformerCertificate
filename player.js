@@ -7,11 +7,11 @@ var Player = function() {
 	this.pos = new Vector2();
 	this.pos.set(canvas.width/2, canvas.height/2);
 	
-	//this.width = 159;
-	//this.height = 163;
+	this.width = 159;
+	this.height = 163;
 	
-	this.dis = new Vector2();
-	this.dis.set(159, 163);
+	//this.dis = new Vector2();
+	//this.dis.set(159, 163);
 	
 	//this.velocityX = 0;
 	//this.velocityY = 0;
