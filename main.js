@@ -63,6 +63,13 @@ var TILESET_SPACING = 2;
 var TILESET_COUNT_X = 14;
 var TILESET_COUNT_Y = 14;
 
+var LAYER_BACKGROUND = 0;
+var LAYER_OBJECTS = 1;
+//Fix death layer json
+//var LAYER_DEATH = 2;
+var LAYER_PLATFORMS = 2;
+var LAYER_LADDERS = 3;
+
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
 
@@ -104,6 +111,41 @@ function initializeCollision()
 }
 
 
+function tileToPixel(tile_coord)
+{
+	return tile_coord * TILE;
+}
+
+function pixelToTile(pixel)
+{
+	return Math.floor(pixel / TILE);
+}
+
+function cellAtTileCoord(layer, tx, ty)
+{
+	//if off the top, left or right of the map
+	if ( tx < 0 || tx > MAP.tw || ty < 0 )
+	{
+		return 1;
+	}
+	
+	if ( ty >= MAP.th )
+	{
+		return 0;
+	}
+	
+	return cells[layer][ty][tx];
+}
+
+function cellAtPixelCoord(layer, x, y)
+{
+	var tx = pixelToTile(x);
+	var ty = pixelToTile(y);
+	
+	return cellAtTileCoord(layer, tx ,ty);
+}
+
+
 //DRAWS THE MAP
 function drawMap()
 {
@@ -141,7 +183,7 @@ function drawMap()
 					//destination x on the canvas
 					var dx = x * TILE;
 					//destination y on the canvas
-					var dy = (y-17) * TILE;
+					var dy = (y-1) * TILE;
 					
 					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE,
 												dx, dy, TILESET_TILE, TILESET_TILE);
