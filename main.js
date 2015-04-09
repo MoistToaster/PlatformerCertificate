@@ -54,6 +54,8 @@ var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
 
+
+//Level variables
 var LAYER_COUNT = 6;
 var MAP = {tw:40, th:30}; //set this to size of map
 var TILE = 35;
@@ -69,6 +71,21 @@ var LAYER_OBJECTS = 2;
 var LAYER_DEATH = 3;
 var LAYER_PLATFORMS = 4;
 var LAYER_LADDERS = 5;
+
+//Animation variables
+var LEFT = 0;
+var RIGHT = 1;
+
+var ANIM_IDLE_LEFT = 0;
+var ANIM_JUMP_LEFT = 1;
+var ANIM_WALK_LEFT = 2;
+var ANIM_IDLE_RIGHT = 3;
+var ANIM_JUMP_RIGHT = 4;
+var ANIM_WALK_RIGHT = 5;
+
+var ANIM_MAX = 6;
+
+
 
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
