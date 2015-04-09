@@ -17,9 +17,10 @@ var Player = function() {
 Player.prototype.update = function(deltaTime)
 {
 	var acceleration = new Vector2();
-	var playerAccel = 5000;
-	var playerDrag = 10;
+	var playerAccel = 6000;
+	var playerDrag = 12;
 	var playerGravity = TILE * 9.8 * 6;
+	var jumpForce = 10000 * 6;
 	
 	acceleration.y = playerGravity;
 	
@@ -31,14 +32,14 @@ Player.prototype.update = function(deltaTime)
 	{
 		acceleration.x += playerAccel;
 	}
-	if ( keyboard.isKeyDown(keyboard.KEY_UP) )
+
+	if ( keyboard.isKeyDown(keyboard.KEY_UP) && !this.jumping )
 	{
-		acceleration.y -= playerAccel;
+		acceleration.y -= jumpForce;
+		this.jumping = true;
 	}
-	if ( keyboard.isKeyDown(keyboard.KEY_DOWN) )
-	{
-		acceleration.y += playerAccel;
-	}
+	
+	
 	
 	var dragVector = this.velocity.multiplyScalar(playerDrag);
 	dragVector.y = 0;
@@ -47,6 +48,11 @@ Player.prototype.update = function(deltaTime)
 	this.velocity = this.velocity.add(acceleration.multiplyScalar(deltaTime));
 	this.position = this.position.add(this.velocity.multiplyScalar(deltaTime));
 
+	
+	
+	
+	
+	
 	var tx = pixelToTile(this.position.x);
 	var ty = pixelToTile(this.position.y);
 	
@@ -66,6 +72,7 @@ Player.prototype.update = function(deltaTime)
 			this.position.y = tileToPixel(ty);
 			this.velocity.y = 0;
 			ny = 0;
+			this.jumping = false;
 		}
 	}
 	else if (this.velocity.y < 0 ) //if moving up

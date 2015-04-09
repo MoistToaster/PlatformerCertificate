@@ -54,7 +54,7 @@ var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
 
-var LAYER_COUNT = 5;
+var LAYER_COUNT = 6;
 var MAP = {tw:40, th:30}; //set this to size of map
 var TILE = 35;
 var TILESET_TILE = 70;
@@ -63,11 +63,12 @@ var TILESET_SPACING = 2;
 var TILESET_COUNT_X = 14;
 var TILESET_COUNT_Y = 14;
 
-var LAYER_BACKGROUND = 0;
-var LAYER_OBJECTS = 1;
-var LAYER_DEATH = 2;
-var LAYER_PLATFORMS = 3;
-var LAYER_LADDERS = 4;
+var LAYER_BACKGROUND2 = 0;
+var LAYER_BACKGROUND = 1;
+var LAYER_OBJECTS = 2;
+var LAYER_DEATH = 3;
+var LAYER_PLATFORMS = 4;
+var LAYER_LADDERS = 5;
 
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
@@ -205,12 +206,13 @@ function run()
 	
 	
 	//added these lines
-	player.update(deltaTime);
-	player.draw();
 	
 	enemy.update(deltaTime);
 	enemy.draw();
 	drawMap();
+	
+	player.update(deltaTime);
+	player.draw();
 	// update the frame counter 
 	fpsTime += deltaTime;
 	fpsCount++;
