@@ -204,15 +204,20 @@ function run()
 	
 	var deltaTime = getDeltaTime();
 	
+	if ( deltaTime > 0.03 )
+	{
+		deltaTime = 0.03;
+	}
 	
-	//added these lines
+	drawMap();
 	
 	enemy.update(deltaTime);
 	enemy.draw();
-	drawMap();
 	
 	player.update(deltaTime);
 	player.draw();
+	
+	
 	// update the frame counter 
 	fpsTime += deltaTime;
 	fpsCount++;
