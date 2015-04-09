@@ -39,7 +39,7 @@ var Player = function()
 	
 	
 	this.position = new Vector2();
-	this.position.set(canvas.width/2, canvas.height/2);
+	this.position.set(canvas.width/10, canvas.height/1.28);
 	
 	this.velocity = new Vector2();
 	
@@ -48,7 +48,7 @@ var Player = function()
 	this.jumping = false;
 	this.falling = false;
 	
-	this.direction = LEFT;
+	this.direction = RIGHT;
 	
 	this.angularVelocity = 0;
 	this.rotation = 0;

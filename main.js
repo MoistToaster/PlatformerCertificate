@@ -40,9 +40,7 @@ var SCREEN_HEIGHT = canvas.height;
 
 
 //ADDED THESE LINES
-var keyboard = new Keyboard();
-var player = new Player();
-var enemy = new Enemy();
+
 //var vector2 = new Vector2object();
 
 
@@ -85,7 +83,9 @@ var ANIM_WALK_RIGHT = 5;
 
 var ANIM_MAX = 6;
 
-
+var keyboard = new Keyboard();
+var player = new Player();
+var enemy = new Enemy();
 
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
