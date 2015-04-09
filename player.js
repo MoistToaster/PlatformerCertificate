@@ -20,7 +20,7 @@ Player.prototype.update = function(deltaTime)
 	var playerAccel = 6000;
 	var playerDrag = 12;
 	var playerGravity = TILE * 9.8 * 6;
-	var jumpForce = 10000 * 6;
+	var jumpForce = 45000;
 	
 	acceleration.y = playerGravity;
 	
@@ -38,8 +38,7 @@ Player.prototype.update = function(deltaTime)
 		acceleration.y -= jumpForce;
 		this.jumping = true;
 	}
-	
-	
+
 	
 	var dragVector = this.velocity.multiplyScalar(playerDrag);
 	dragVector.y = 0;
@@ -48,8 +47,6 @@ Player.prototype.update = function(deltaTime)
 	this.velocity = this.velocity.add(acceleration.multiplyScalar(deltaTime));
 	this.position = this.position.add(this.velocity.multiplyScalar(deltaTime));
 
-	
-	
 	
 	
 	
