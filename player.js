@@ -31,15 +31,21 @@ var Player = function()
 	this.width = 165;
 	this.height = 125;
 	
+	this.health = 100;
+	
+	
 	for ( var i = 0 ; i < ANIM_MAX ; ++i)
 	{
 		this.sprite.setAnimationOffset(i, -this.width/2, -this.height/2);
 	}
 	
+	this.startPos = new Vector2();
+	this.startPos.set(canvas.width/10, canvas.height/1.3);
+	
 	
 	
 	this.position = new Vector2();
-	this.position.set(canvas.width/10, canvas.height/1.28);
+	this.position.set(this.startPos.x, this.startPos.y);
 	
 	this.velocity = new Vector2();
 	
@@ -119,7 +125,7 @@ Player.prototype.update = function(deltaTime)
 	//Makes the down arrow apply downwards force on the player
 		else if ( keyboard.isKeyDown(keyboard.KEY_DOWN) && this.falling )
 	{
-		acceleration.y += playerAccel;
+		acceleration.y += playerAccel / 2;
 		this.jumping = false;
 	}
 	
@@ -164,10 +170,98 @@ Player.prototype.update = function(deltaTime)
 	var nx = this.position.x % TILE;
 	var ny = this.position.y % TILE;
 	
+	//platform collision
 	var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
 	var cell_right = cellAtTileCoord(LAYER_PLATFORMS, tx+1, ty);
 	var cell_down = cellAtTileCoord(LAYER_PLATFORMS, tx, ty+1);
 	var cell_diag = cellAtTileCoord(LAYER_PLATFORMS, tx+1, ty+1);
+	
+	
+	//pipe collision
+	var objectcell = cellAtTileCoord(LAYER_OBJECT, tx, ty);
+	var objectcell_right = cellAtTileCoord(LAYER_OBJECT, tx+1, ty);
+	var objectcell_down = cellAtTileCoord(LAYER_OBJECT, tx, ty+1);
+	var objectcell_diag = cellAtTileCoord(LAYER_OBJECT, tx+1, ty+1);
+	 
+	if	( objectcell ||	
+		(objectcell_right && nx ) ||
+		(objectcell_down && ny ) ||
+		(objectcell_diag && nx && ny ))
+	{
+	 if (keyboard.isKeyDown(keyboard.KEY_DOWN))
+		{
+			player.position.set(-90, 90);
+		}
+	}
+	
+	
+	//OBJECT(1) COLLISION CHECK
+{
+		if ( this.velocity.y > 0 )
+	{
+		if ( (objectcell_down && !objectcell) || (objectcell_diag && !objectcell_right && nx) )
+		{
+			this.position.y = tileToPixel(ty) - collisionOffset.y;
+			this.velocity.y = 0;
+			ny = 0;
+			this.jumping = false;
+		}
+	}
+	else if (this.velocity.y < 0 ) //if moving up
+	{
+		if ( (objectcell && !objectcell_down) || (objectcell_right && !objectcell_diag && nx) )
+		{
+			this.position.y = tileToPixel(ty) - collisionOffset.y;
+			this.velocity.y = 0;
+			
+			objectcell = objectcell_down;
+			objectcell_right + objectcell_diag;
+			
+			objectcell_down = cellAtTileCoord(LAYER_OBJECT, tx, ty+2);
+			objectcell_diag = cellAtTileCoord(LAYER_OBJECT, tx+1, ty+2);
+			
+			ny = 0;
+		}
+	}
+	
+	if (this.velocity.x > 0 ) //if we're moving right
+	{
+		if ( (objectcell_right && !objectcell) || (objectcell_diag && !objectcell_down && ny) )
+		{
+			this.position.x = tileToPixel(tx) - collisionOffset.x;
+			this.velocity.x = 0;
+		}
+	}
+	else if (this.velocity.x < 0) //if we're moving left
+	{
+		if ( (objectcell && !objectcell_right) || (objectcell_down && !objectcell_diag && ny) )
+		{
+			this.position.x = tileToPixel(tx+1) - collisionOffset.x;
+			this.velocity.x = 0;
+		}
+	}	
+};	
+	
+	
+	
+	
+	
+
+	
+	//lava collision
+	var deathcell = cellAtTileCoord(LAYER_DEATH, tx, ty);
+	var deathcell_right = cellAtTileCoord(LAYER_DEATH, tx+1, ty);
+	var deathcell_down = cellAtTileCoord(LAYER_DEATH, tx, ty+1);
+	var deathcell_diag = cellAtTileCoord(LAYER_DEATH, tx+1, ty+1);
+	
+	if ( deathcell ||	
+		(deathcell_right && nx ) ||
+		(deathcell_down && ny ) ||
+		(deathcell_diag && nx && ny ))
+	{
+		this.health -= 100;
+	}
+	
 	
 	//Actual collision checks
 	if ( this.velocity.y > 0 )
@@ -191,7 +285,7 @@ Player.prototype.update = function(deltaTime)
 			cell_right + cell_diag;
 			
 			cell_down = cellAtTileCoord(LAYER_PLATFORMS, tx, ty+2);
-			cel_diag = cellAtTileCoord(LAYER_PLATFORMS, tx+1, ty+2);
+			cell_diag = cellAtTileCoord(LAYER_PLATFORMS, tx+1, ty+2);
 			
 			ny = 0;
 		}
@@ -213,11 +307,22 @@ Player.prototype.update = function(deltaTime)
 			this.velocity.x = 0;
 		}
 	}	
+	//if player falls of screen
+	if (this.position.y > MAP.th * TILE + this.height)
+	{
+		this.position.set(this.startPos.x, this.startPos.y)
+		timer = 60;
+	}
 }
 
-Player.prototype.draw = function()
+Player.prototype.draw = function(offsetX, offsetY)
 {
-	this.sprite.draw(context, this.position.x, this.position.y)
+	this.sprite.draw(context, this.position.x - offsetX, this.position.y - offsetY)
+	
+	context.fillStyle = "black";
+	context.font = "32px Arial";
+	var textToDisplay = "HP: " + this.health;
+	context.fillText(textToDisplay, canvas.width -150, 50);
 }
 
 

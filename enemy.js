@@ -1,43 +1,80 @@
-var Enemy = function() {
+var Enemy = function() 
+{
 	this.image = document.createElement("img");
-	
-	this.x = canvas.width/1.2;
-	this.y = canvas.height/2;
-	
-	this.width = 159;
-	this.height = 163;
-
-	this.velocityX = 0;
-	this.velocityY = 0;
-	
-	this.angularVelocity = 0;
-	
-	this.rotation = 0;
-	
 	this.image.src = "enemy.png";
-};
+	
+	this.width = 200;
+	this.height = 145;
+	
+	this.position = new Vector2();
+	this.velocity = new Vector2();
+	
+	this.direction = RIGHT;
+}
 
 Enemy.prototype.update = function(deltaTime)
 {
-	if ( keyboard.isKeyDown(keyboard.KEY_SPACE) )
+	var acceleration = new Vector2();
+	var enemyAccel = 1000;
+	var enemyDrag = 10;
+	
+	if ( this.direction == RIGHT)
 	{
-		this.rotation -= deltaTime;
+		acceleration.x = enemyAccel;
 	}
 	else
 	{
-		this.rotation += deltaTime;
+		acceleration.x = -enemyAccel;
+	}
+	
+	var dragX = this.velocity.x * enemyDrag;
+	acceleration.x -= dragX;
+	this.velocity = this.velocity.add(acceleration.multiplyScalar(deltaTime));
+	this.position = this.position.add(this.velocity.multiplyScalar(deltaTime));
+	
+	
+	var tx = pixelToTile(this.position.x);
+	var ty = pixelToTile(this.position.y);
+	
+	var nx = this.position.x % TILE;
+	var ny = this.position.y % TILE;
+	
+	var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
+	var cell_right = cellAtTileCoord(LAYER_PLATFORMS, tx+1, ty);
+	var cell_down = cellAtTileCoord(LAYER_PLATFORMS, tx, ty+1);
+	var cell_diag = cellAtTileCoord(LAYER_PLATFORMS, tx+1, ty+1);
+	
+	//walk along a platform
+	
+	if ( this.direction == RIGHT )
+	{
+		if ( !cell && (cell_right && nx) )
+		{
+			this.direction = LEFT;
+		}
+		
+		if (cell_down && !cell_diag && nx)
+		{
+			this.direction - LEFT;
+		}
+		
+	}
+	else
+	{
+			if ( cell && (!cell_right && nx) )
+			{
+				this.direction = RIGHT;
+			}
+			if (!cell && (cell_diag && nx) )
+			{
+				this.direction = RIGHT;
+			}
 	}
 }
 
-Enemy.prototype.draw = function()
+Enemy.prototype.draw = function(offsetX, offsetY)
 {
-	context.save();
-	
-		context.translate(this.x, this.y);
-		context.rotate(this.rotation);
-		context.drawImage(this.image, -this.width/2, -this.height/2);
-		
-	context.restore();	
+	context.drawImage(this.image, this.position.x - offsetX, this.position.y - offsetY, this.width, this.height);
 }
 
 

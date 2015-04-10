@@ -34,10 +34,6 @@ var SCREEN_HEIGHT = canvas.height;
 
 
 
-	// COMMENTED OUT
-//var chuckNorris = document.createElement("img");
-//chuckNorris.src = "hero.png";
-
 
 //ADDED THESE LINES
 
@@ -54,9 +50,9 @@ var fpsTime = 0;
 
 
 //Level variables
-var LAYER_COUNT = 6;
+var LAYER_COUNT = 10;
 var MAP = {tw:40, th:30}; //set this to size of map
-var TILE = 35;
+var TILE = 34.7;
 var TILESET_TILE = 70;
 var TILESET_PADDING = 2;
 var TILESET_SPACING = 2;
@@ -65,10 +61,14 @@ var TILESET_COUNT_Y = 14;
 
 var LAYER_BACKGROUND2 = 0;
 var LAYER_BACKGROUND = 1;
-var LAYER_OBJECTS = 2;
-var LAYER_DEATH = 3;
-var LAYER_PLATFORMS = 4;
-var LAYER_LADDERS = 5;
+var LAYER_OBJECT4 = 2;
+var LAYER_OBJECT3 = 3;
+var LAYER_OBJECT2 = 4;
+var LAYER_OBJECT = 5;
+var LAYER_DEATH = 6;
+var LAYER_PLATFORMS = 7;
+var LAYER_LADDERS = 8;
+var LAYER_FINISH = 9;
 
 //Animation variables
 var LEFT = 0;
@@ -85,7 +85,26 @@ var ANIM_MAX = 6;
 
 var keyboard = new Keyboard();
 var player = new Player();
+
 var enemy = new Enemy();
+
+//Timer start time
+var timer = 60;
+
+//Background music
+var bgMusic = new Howl(
+	{
+		urls:["bgmusic.mp3"],
+		loop:true,
+		buffer:true,
+		volume:0.7
+	
+	});
+bgMusic.play();
+
+
+
+//var enemy = new Enemy();
 
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
@@ -164,7 +183,7 @@ function cellAtPixelCoord(layer, x, y)
 
 
 //DRAWS THE MAP
-function drawMap()
+function drawMap(offsetX, offsetY)
 {
 	//this loops over all the layers in our tilemap
 	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++ )
@@ -198,9 +217,9 @@ function drawMap()
 												(TILESET_TILE + TILESET_SPACING);
 					
 					//destination x on the canvas
-					var dx = x * TILE;
+					var dx = x * TILE - offsetX;
 					//destination y on the canvas
-					var dy = (y-1) * TILE;
+					var dy = (y-1) * TILE - offsetY;
 					
 					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE,
 												dx, dy, TILESET_TILE, TILESET_TILE);
@@ -221,18 +240,53 @@ function run()
 	
 	var deltaTime = getDeltaTime();
 	
+	timer -= deltaTime;
+	
 	if ( deltaTime > 0.03 )
 	{
 		deltaTime = 0.03;
 	}
 	
-	drawMap();
+	var xScroll = player.position.x - player.startPos.x;
+	var yScroll = player.position.y - player.startPos.y;
 	
-	enemy.update(deltaTime);
-	enemy.draw();
+	if ( xScroll < 0)
+		xScroll = 0;
+	if ( xScroll > MAP.tw * TILE - canvas.width)
+		xScroll = MAP.tw * TILE - canvas.width;
+		
+	if ( yScroll < 0)
+		yScroll = 0;
+	if ( yScroll > MAP.th * TILE - canvas.height)
+		yScroll = MAP.th * TILE - canvas.height;
+	
+	drawMap(xScroll, yScroll);
+	
+	//enemy.update(deltaTime);
+	//enemy.draw();
 	
 	player.update(deltaTime);
-	player.draw();
+	player.draw(xScroll, yScroll);
+	
+	enemy.update(deltaTime);
+	enemy.draw(xScroll, yScroll);
+	
+	context.fillStyle = "black";
+	context.font = "32px Arial";
+	var textToDisplay = "Time Left: " + Math.floor(timer);
+	context.fillText(textToDisplay, 24, 50);
+	
+	if (timer < 0)
+	{
+		player.position.set(canvas.width/10, canvas.height/1.3);
+		timer = 60;
+	}
+	
+	if ( player.health <= 0)
+	{
+		player.position.set(canvas.width/10, canvas.height/1.3);
+		player.health = 100;
+	}
 	
 	
 	// update the frame counter 
